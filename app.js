@@ -1,14 +1,24 @@
 const express = require('express');
 const books = require('./books');
 const uuid = require('uuid');
+const exphbs = require('express-handlebars');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}...`));
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false }));
 
+app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
+app.set('view engine', 'handlebars');
+
+app.get('/', (req, res) => {
+    res.render('index', {
+        title: "Book App",
+        books
+    });
+});
 
 app.use((req, res, next) => {
     console.log(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
@@ -46,7 +56,7 @@ app.post('/api/books', (req, res) => {
     }
 
     books.push(newBook);
-    res.json(books);
+    res.redirect('/');
 });
 
 /**Update a member */
