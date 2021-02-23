@@ -24,7 +24,12 @@ app.get('/api/books', (req, res) => {
 /**Get a single member */
 
 app.get('/api/books/:id', (req, res) => {
-    res.send(books.filter(m => m.id === parseInt(req.params.id)));
+    const exist = books.some(m => m.id === parseInt(req.params.id));
+    if (exist) {
+        res.send(books.filter(m => m.id === parseInt(req.params.id)));
+    } else {
+        res.status(400).json({ msg: `No book with the id:${req.params.id} exists` });
+    }
 });
 
 /**Add a member */
@@ -44,6 +49,22 @@ app.post('/api/books', (req, res) => {
     res.json(books);
 });
 
+/**Update a member */
 
+app.put('/api/books/:id', (req, res) => {
+    const exist = books.some(m => m.id === parseInt(req.params.id));
+    if (exist) {
+        const updateBook = req.body;
+        books.forEach(m => {
+            if (m.id === parseInt(req.params.id)) {
+                m.name = updateBook.name ? updateBook.name : m.name;
+                m.author = updateBook.author ? updateBook.author : m.author;
+                res.json({ msg: "Book updated", m });
+            }
+        })
+    } else {
+        res.status(400).json({ msg: `No book with the id:${req.params.id} exists` });
+    }
+});
 
 
