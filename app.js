@@ -26,7 +26,7 @@ app.get('/api/books', (req, res) => {
 app.get('/api/books/:id', (req, res) => {
     const exist = books.some(m => m.id === parseInt(req.params.id));
     if (exist) {
-        res.send(books.filter(m => m.id === parseInt(req.params.id)));
+        res.json({ books: books.filter(m => m.id === parseInt(req.params.id)) });
     } else {
         res.status(400).json({ msg: `No book with the id:${req.params.id} exists` });
     }
@@ -67,4 +67,14 @@ app.put('/api/books/:id', (req, res) => {
     }
 });
 
+/**Delete a member */
+
+app.delete('/api/books/:id', (req, res) => {
+    const exist = books.some(m => m.id === parseInt(req.params.id));
+    if (exist) {
+        res.json({ msg: "book is deleted", books: books.filter(m => m.id !== parseInt(req.params.id)) });
+    } else {
+        res.status(400).json({ msg: `No book with the id:${req.params.id} exists` });
+    }
+});
 
